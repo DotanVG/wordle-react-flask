@@ -1,6 +1,17 @@
 # wordle-react-flask
-🐍 Python course task evolved into a fullstack web app!  
-🟩🟨⬜ Wordle game implemented with modern tech stack: 
-⚛️ React frontend for interactive UI 
-🌶️ Flask backend for game logic 
-🚀 From simple script to web application - a journey in fullstack development!
+
+## 🚀 From Python Script to Fullstack Web App
+
+🐍 A Python course task evolved into a fullstack web app!
+
+### 🎮 Game Features
+🟩🟨⬜ Classic Wordle gameplay implemented as a web application
+
+### 🛠️ Tech Stack
+- ⚛️ **Frontend:** React for a responsive and interactive UI
+- 🌶️ **Backend:** Flask powering the game logic and API
+
+### 💡 Project Journey
+Simple script ➡️ Command-line game ➡️ Web application
+
+A personal adventure in fullstack development!
