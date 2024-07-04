@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import './App.css'
+import useApi from './useApi'
 
 // Keyboard component
 const Keyboard = ({ onKeyPress, usedLetters }) => {
@@ -40,6 +40,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [secretWord, setSecretWord] = useState('')
 
+  const apiCall = useApi();
+
   // Start a new game when the component mounts
   useEffect(() => {
     startNewGame();
@@ -67,10 +69,10 @@ function App() {
 // Function to start a new game
 const startNewGame = async () => {
   setIsLoading(true);
+  setError(null);
   try {
-    const response = await axios.get('http://localhost:5000/new-game?length=5');
-    // Make sure your backend is sending the word in the response
-    setSecretWord(response.data.word || '');
+    const data = await apiCall('get', '/new-game');
+    setSecretWord(data.word || '');
     // Reset all game state
     setGuess('');
     setFeedback(null);
@@ -80,6 +82,7 @@ const startNewGame = async () => {
     setUsedLetters({});
   } catch (error) {
     console.error('Error starting new game:', error);
+    setError('Failed to start a new game. Please try again.');
   } finally {
     setIsLoading(false);
   }
@@ -90,17 +93,18 @@ const startNewGame = async () => {
     if (attempts >= 6 || gameOver || guess.length !== 5) return
 
     try {
-      const response = await axios.post('http://localhost:5000/guess', { guess })
-      setFeedback(response.data)
+      const data = await apiCall('post', '/guess', { guess });
+      setFeedback(data)
       setAttempts(attempts + 1)
-      setGuesses([...guesses, { word: guess, feedback: response.data }])
-      updateUsedLetters(guess, response.data)
-      if (response.data.isCorrect || attempts + 1 >= 6) {
+      setGuesses([...guesses, { word: guess, feedback: data }])
+      updateUsedLetters(guess, data)
+      if (data.isCorrect || attempts + 1 >= 6) {
         setGameOver(true)
       }
       setGuess('')
     } catch (error) {
       console.error('Error:', error)
+      setError('Failed to submit guess. Please try again.');
     }
   }
 
@@ -134,6 +138,15 @@ const startNewGame = async () => {
     return (
       <div className="App">
         <div className="loader"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="App">
+        <p>{error}</p>
+        <button onClick={startNewGame}>Try Again</button>
       </div>
     );
   }

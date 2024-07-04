@@ -1,9 +1,13 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=os.getenv('ALLOWED_ORIGINS').split(','))
 
 # Global variable to store the secret word
 SECRET_WORD = ""
@@ -13,9 +17,10 @@ def get_random_word():
     Fetch a random 5-letter word from an external API.
     Retries until a suitable word is found.
     """
+    api_url = os.getenv('RANDOM_WORD_API_URL')
     while True:
         try:
-            response = requests.get("https://random-word-api.herokuapp.com/word")
+            response = requests.get(api_url)
             if response.status_code == 200:
                 word = response.json()[0].upper()
                 if len(word) == 5:
@@ -23,7 +28,7 @@ def get_random_word():
             # If word is not 5 letters, we'll try again
         except requests.RequestException:
             print("Error fetching word, retrying...")
-    
+
 @app.route('/new-game', methods=['GET'])
 def new_game():
     """
@@ -70,4 +75,4 @@ def check_guess():
 if __name__ == '__main__':
     # Start the first game
     SECRET_WORD = get_random_word()
-    app.run(debug=True)
+    app.run(debug=os.getenv('FLASK_ENV') == 'development')
