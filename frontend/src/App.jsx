@@ -39,6 +39,7 @@ function App() {
   const [usedLetters, setUsedLetters] = useState({})
   const [isLoading, setIsLoading] = useState(true)
   const [secretWord, setSecretWord] = useState('')
+  const [error, setError] = useState(null);
 
   const apiCall = useApi();
 
