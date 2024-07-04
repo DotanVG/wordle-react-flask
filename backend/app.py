@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
-CORS(app, origins=os.getenv('ALLOWED_ORIGINS').split(','))
+CORS(app, resources={r"/*": {"origins": os.getenv('ALLOWED_ORIGINS').split(',')}})
 
 # Global variable to store the secret word
 SECRET_WORD = ""
