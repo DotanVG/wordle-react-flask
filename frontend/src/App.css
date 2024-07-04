@@ -1,14 +1,31 @@
 /* Overall app styling */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #242424;
+}
+
 .App {
   text-align: center;
   font-family: Arial, sans-serif;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 h1 {
   color: white;
+  font-size: clamp(1.5rem, 5vw, 3.2rem);
+  margin-bottom: 20px;
 }
 
 /* Game board styling */
@@ -23,14 +40,14 @@ h1 {
 }
 
 .letter-box {
-  width: 50px;
-  height: 50px;
+  width: clamp(30px, 8vw, 50px);
+  height: clamp(30px, 8vw, 50px);
   border: 2px solid #d3d6da;
   margin: 2px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  font-size: clamp(16px, 4vw, 24px);
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -44,6 +61,8 @@ h1 {
 /* Keyboard styling */
 .keyboard {
   margin-top: 20px;
+  width: 100%;
+  max-width: 500px;
 }
 
 .keyboard-row {
@@ -54,14 +73,14 @@ h1 {
 
 .key {
   margin: 0 2px;
-  padding: 10px;
-  font-size: 1em;
+  padding: clamp(5px, 2vw, 10px);
+  font-size: clamp(0.7em, 2vw, 1em);
   background-color: #c7c7c7;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   text-transform: uppercase;
-  min-width: 30px;
+  min-width: clamp(20px, 5vw, 30px);
 }
 
 /* Key colors */
@@ -84,16 +103,92 @@ button {
   border-radius: 4px;
 }
 
-/* Responsive design for smaller screens */
+/* Loader styling */
+.loader {
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  display: inline-grid;
+  color: white;
+}
+
+.loader:before,
+.loader:after {
+  content: "Loading...";
+  grid-area: 1/1;
+  line-height: 1em;
+  -webkit-mask: linear-gradient(90deg, #000 50%, #0000 0) 0 50%/2ch 100%;
+  mask: linear-gradient(90deg, #000 50%, #0000 0) 0 50%/2ch 100%;
+  -webkit-mask-position: calc(var(--s,0)*1ch) 50%;
+  mask-position: calc(var(--s,0)*1ch) 50%;
+  animation: l30 2s infinite;
+}
+
+.loader:after {
+  --s: -1;
+}
+
+@keyframes l30 {
+   33%  {
+     transform: translateY(calc(var(--s,1)*50%));
+     -webkit-mask-position: calc(var(--s,0)*1ch) 50%;
+     mask-position: calc(var(--s,0)*1ch) 50%;
+   }
+   66%  {
+     transform: translateY(calc(var(--s,1)*50%));
+     -webkit-mask-position: calc(var(--s,0)*1ch + 1ch) 50%;
+     mask-position: calc(var(--s,0)*1ch + 1ch) 50%;
+   }
+   100% {
+     transform: translateY(calc(var(--s,1)*0%));
+     -webkit-mask-position: calc(var(--s,0)*1ch + 1ch) 50%;
+     mask-position: calc(var(--s,0)*1ch + 1ch) 50%;
+   }
+}
+
+/* Responsive design */
 @media (max-width: 600px) {
+  .App {
+    padding: 10px;
+  }
+
   .letter-box {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+    margin: 1px;
   }
 
   .key {
-    padding: 8px;
-    font-size: 0.8em;
+    margin: 0 1px;
+  }
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 400px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .letter-box {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .key {
+    padding: 6px;
+    font-size: 0.7em;
+    min-width: 24px;
   }
 }

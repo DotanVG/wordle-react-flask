@@ -37,6 +37,8 @@ function App() {
   const [gameOver, setGameOver] = useState(false)
   const [guesses, setGuesses] = useState([])
   const [usedLetters, setUsedLetters] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [secretWord, setSecretWord] = useState('')
 
   // Start a new game when the component mounts
   useEffect(() => {
@@ -62,21 +64,26 @@ function App() {
     };
   }, [guess, attempts, gameOver]);
 
-  // Function to start a new game
-  const startNewGame = async () => {
-    try {
-      await axios.get('http://localhost:5000/new-game');
-      // Reset all game state
-      setGuess('');
-      setFeedback(null);
-      setAttempts(0);
-      setGameOver(false);
-      setGuesses([]);
-      setUsedLetters({});
-    } catch (error) {
-      console.error('Error starting new game:', error);
-    }
-  };
+// Function to start a new game
+const startNewGame = async () => {
+  setIsLoading(true);
+  try {
+    const response = await axios.get('http://localhost:5000/new-game?length=5');
+    // Make sure your backend is sending the word in the response
+    setSecretWord(response.data.word || '');
+    // Reset all game state
+    setGuess('');
+    setFeedback(null);
+    setAttempts(0);
+    setGameOver(false);
+    setGuesses([]);
+    setUsedLetters({});
+  } catch (error) {
+    console.error('Error starting new game:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Function to handle guess submission
   const handleSubmit = async () => {
@@ -123,6 +130,14 @@ function App() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="App">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <h1>Dotan's Wordle WebApp</h1>
@@ -146,7 +161,11 @@ function App() {
         ))}
       </div>
       <p>Attempts: {attempts}/6</p>
-      {gameOver && <p>{feedback?.isCorrect ? 'You won!' : 'Game over!'}</p>}
+      {gameOver && (
+        <p>
+          {feedback?.isCorrect ? 'You won!' : `Game over! The word was: ${secretWord}`}
+        </p>
+      )}
       {gameOver && <button onClick={startNewGame}>New Game</button>}
       <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
     </div>

@@ -31,7 +31,7 @@ def new_game():
     """
     global SECRET_WORD
     SECRET_WORD = get_random_word()
-    return jsonify({"message": "New game started"}), 200
+    return jsonify({"message": "New game started", "word": SECRET_WORD}), 200
 
 @app.route('/guess', methods=['POST'])
 def check_guess():
